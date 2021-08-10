@@ -4,6 +4,8 @@ import BoardList from "../component/BoardList";
 import BoardNew from "../component/BoardNew";
 import { boardRemove, boardSave, boardSelectRow } from "../module/boardReducer";
 
+// View 컴포넌트들이 Reducer와 통신간에 일어날 로직 등을 구현한 컴포넌트
+// 다리역할을 해주는 이벤트 트리거 역할을 해주는 셈
 function Container() {
   // State
   let [inputData, setInputData] = useState({
@@ -28,7 +30,7 @@ function Container() {
     dispatch(boardSelectRow(boardId));
 
     // inputData에 selectRowData의 값을 반영
-    if (JSON.stringify(selectRowData) === "{}") {
+    if (JSON.stringify(selectRowData) !== "{}") {
       // Javascript 값이나 객체를 JSON 문자열로 변환
       setInputData({
         boardId: selectRowData.boardId,
@@ -60,9 +62,31 @@ function Container() {
     <div>
       <div>
         <table border="1">
-          <tbody></tbody>
+          <tbody>
+            <tr align="center">
+              <td width="50">번호</td>
+              <td width="100">제목</td>
+              <td width="200">내용</td>
+            </tr>
+            {boards.map((row) => (
+              <BoardList
+                key={row.boardId}
+                boardId={row.boardId}
+                boardTitle={row.boardTitle}
+                boardContent={row.boardContent}
+                onRemove={onRemove}
+                onRowClick={onRowClick}
+              />
+            ))}
+          </tbody>
         </table>
       </div>
+      <BoardNew
+        onSave={onSave}
+        changeInput={changeInput}
+        inputData={inputData}
+        resetForm={resetForm}
+      />
     </div>
   );
 }
